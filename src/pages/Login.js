@@ -6,11 +6,12 @@ import { useNavigate  } from 'react-router-dom'
 const Login = (props) => {
     let navigate = useNavigate(); 
     const onFinish = async (values) => {
+        
         const res = await axios.post('https://react-test.apps-dev.tid.es/auth',
-        { username: 'livingapp', password: "bGl2aW5nYXBw" });
+        { username: process.env.REACT_APP_PROFILE, password: process.env.REACT_APP_PASSWORD });
         localStorage.setItem("user", res.data.access_token);
         console.log("Successfully logged in!")
-        return  navigate("/");
+        return  navigate("/posts");
     };
 
     const onFinishFailed = (errorInfo) => {
