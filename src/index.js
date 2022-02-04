@@ -1,12 +1,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import Profile from './pages/Profile';
+import Login from './pages/Login';
+import Posts from './pages/Posts';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import {useAuth, AuthProvider} from './context/auth.context'
+
+const ProtectedRoute = ({component: Component, ...rest }) => {
+  let { user } = useAuth();
+
+  if (!user || user.token === "") {
+    return (
+      <Navigate to="/login" />
+    );
+  }
+  return <Component {...rest} user={user}/>;
+};
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<ProtectedRoute component={Posts} ></ProtectedRoute>} />
+        <Route path="posts" element={<ProtectedRoute component={Posts} ></ProtectedRoute>} />
+        <Route path="profile" element={<ProtectedRoute component={Profile} ></ProtectedRoute>} />
+        <Route path="login" element={<Login />} />
+      </Routes>
+    </AuthProvider>
+    </BrowserRouter>,
   </React.StrictMode>,
   document.getElementById('root')
 );
